@@ -1,0 +1,25 @@
+name: ci
+
+# No `branches:` filter on pull_request, deliberately: a filtered trigger
+# reports "no checks" forever for a pull request not aimed at main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kit:
+    name: the kit is whole
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: go vet ./...
+      - run: go test ./...
